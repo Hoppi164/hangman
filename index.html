@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Hangman</title>
+	<meta charset="utf-8" />
+	<!-- CSS Imports -->
+	<!-- Bootstrap, Fontawesome -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+	<!-- Custom CSS (It's better to use Bootstrap where possible) -->
+	<style type="text/css">
+	</style>
+</head>
+
+<body>
+	<div class="container" id="app">
+		<!-- Your content must go here to access vue data -->
+		<p>TEST: {{message}}</p>
+	</div>
+</body>
+
+<!-- Import VueJS -->
+<!-- DEV VERSION (CONSOLE WARNINGS)-->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- PROD VERSION (SMALLER/FASTER) -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+<!-- Setup App -->
+<script type="text/javascript">
+var app = new Vue({
+	el: '#app',
+	data: {
+		message: 'Vue is working!'
+	}
+})
+</script>
+
+</html>
