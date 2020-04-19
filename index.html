@@ -58,8 +58,21 @@
 		<div class="row text-center">
 
 			<!-- Game Window -->
-			<div class="col-6 col-lg-8">
-				Hangman image
+			<div class="col-6 col-lg-8" style="border-style: solid;">
+				<svg viewBox="0 0 210 297">
+					<g>
+						<circle id="head" cx="87.241135" cy="95.980103" style="stroke-width:0.26458332" r="16.489212" />
+						<rect id="body" width="1.7008928" height="64.633926" x="86.107208" y="109.63453" style="stroke-width:0.26458332" />
+						<rect id="leftArm" width="40.254463" height="1.7008928" x="-159.02344" y="35.548561" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
+						<rect id="rightArm" width="40.254463" height="1.7008928" x="-36.749195" y="158.52542" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect id="leftLeg" width="40.254463" height="1.7008928" x="-101.39115" y="183.6152" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect id="rightLeg" width="40.254463" height="1.7008928" x="-224.36786" y="60.638519" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
+						<rect id="gallows0" width="120.76339" height="5.1026783" x="-162.43526" y="242.66591" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect id="gallows1" width="201.65028" height="5.1026783" x="44.606392" y="137.67783" style="stroke-width:1.00468242" transform="matrix(0,1,1,0,0,0)" />
+						<rect id="gallows2" width="120.76339" height="5.1026783" x="-162.63573" y="40.070679" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect id="gallows3" width="39.673386" height="5.1026783" x="41.431587" y="84.578529" style="stroke-width:0.44563469" transform="matrix(0,1,1,0,0,0)" />
+					</g>
+				</svg>
 			</div>
 
 			<!-- On Screen Keyboard -->
@@ -92,19 +105,54 @@ var app = new Vue({
 		hiddenWord: 'AARDVARK',
 		alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		letters: {},//Will contain an object
+		dictionary: [],
+	},
+	methods: {
+		// Called by user attempting to guess a letter
+		// Checks if letter is within hidden word
+		guessLetter: async function () {
+			
+		},		
+		
+		// Read each line from wordlist file into a js dict
+		readDictionary: async function () {
+			let dictionary = await fetch('wordlist.txt');
+			dictionary = await dictionary.text();
+			dictionary = dictionary.split('\r\n');
+			return dictionary
+		},
+
+		// Returns a random item from inputted list
+		getRandomWord: async function (dictionary) {
+			let randomIndex = Math.floor(Math.random() * dictionary.length)
+			return dictionary[randomIndex]			
+		},
+		
+		// Performs multiple setup actions
+		setupApp: async function () {
+			// Instantiate Dictionary
+			this.dictionary = await this.readDictionary();
+
+			// Instantiate Hidden Word
+			this.hiddenWord = await this.getRandomWord(this.dictionary);
+
+			// Instantiate Letters Object
+			for (const alphabetLetter of this.alphabet) {
+				this.letters[alphabetLetter] = {
+					character: alphabetLetter,
+					isInRandomWord: false,
+					hasBeenChosenByUser: false,
+				}
+			}
+			
+			//Force UI to update
+			this.$forceUpdate();
+		}
 	},
 
 	// This method is run when Vue finishes loading
 	mounted: function () {
-		// Instantiate Letters Object
-		for (const alphabetLetter of this.alphabet) {
-			this.letters[alphabetLetter] = {
-				character: alphabetLetter,
-				isInRandomWord: false,
-				hasBeenChosenByUser: false,
-			}
-		}	
-		this.$forceUpdate();//Force UI to update
+		this.setupApp();
 	}
 })
 </script>
