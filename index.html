@@ -118,7 +118,7 @@ var app = new Vue({
 		readDictionary: async function () {
 			let dictionary = await fetch('wordlist.txt');
 			dictionary = await dictionary.text();
-			dictionary = dictionary.split('\r\n');
+			dictionary = dictionary.split('\n');
 			return dictionary
 		},
 
