@@ -92,19 +92,54 @@ var app = new Vue({
 		hiddenWord: 'AARDVARK',
 		alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		letters: {},//Will contain an object
+		dictionary: [],
+	},
+	methods: {
+		// Called by user attempting to guess a letter
+		// Checks if letter is within hidden word
+		guessLetter: async function () {
+			
+		},		
+		
+		// Read each line from wordlist file into a js dict
+		readDictionary: async function () {
+			let dictionary = await fetch('wordlist.txt');
+			dictionary = await dictionary.text();
+			dictionary = dictionary.split('\r\n');
+			return dictionary
+		},
+
+		// Returns a random item from inputted list
+		getRandomWord: async function (dictionary) {
+			let randomIndex = Math.floor(Math.random() * dictionary.length)
+			return dictionary[randomIndex]			
+		},
+		
+		// Performs multiple setup actions
+		setupApp: async function () {
+			// Instantiate Dictionary
+			this.dictionary = await this.readDictionary();
+
+			// Instantiate Hidden Word
+			this.hiddenWord = await this.getRandomWord(this.dictionary);
+
+			// Instantiate Letters Object
+			for (const alphabetLetter of this.alphabet) {
+				this.letters[alphabetLetter] = {
+					character: alphabetLetter,
+					isInRandomWord: false,
+					hasBeenChosenByUser: false,
+				}
+			}
+			
+			//Force UI to update
+			this.$forceUpdate();
+		}
 	},
 
 	// This method is run when Vue finishes loading
 	mounted: function () {
-		// Instantiate Letters Object
-		for (const alphabetLetter of this.alphabet) {
-			this.letters[alphabetLetter] = {
-				character: alphabetLetter,
-				isInRandomWord: false,
-				hasBeenChosenByUser: false,
-			}
-		}	
-		this.$forceUpdate();//Force UI to update
+		this.setupApp();
 	}
 })
 </script>
