@@ -26,6 +26,10 @@
 
 	<!-- Custom CSS (It's better to use Bootstrap where possible) -->
 	<style type="text/css">
+		.displayLetter {
+			width: 25px !important;
+			display: inline-block;
+		}
 	</style>
 </head>
 
@@ -52,8 +56,15 @@
 
 <body>
 	<div class="container" id="app">
-		<p>hiddenWord: {{hiddenWord}}</p>
-		<p>alphabet: {{alphabet}}</p>
+		<!-- <p>hiddenWord: {{hiddenWord}}</p> -->
+		<!-- <p>alphabet: {{alphabet}}</p> -->
+
+		<h3 class="text-center mb-4">
+			<span v-for="letter in hiddenWord">
+				<b class="mx-1 border-bottom border-dark displayLetter" v-if="letters[letter].hasBeenChosenByUser">{{letter}}</b>
+				<b class="mx-1 text-white border-bottom border-dark displayLetter" v-else>?</b>
+			</span>
+		</h3>
 
 		<div class="row text-center">
 
@@ -61,16 +72,16 @@
 			<div class="col-6 col-lg-8" style="border-style: solid;">
 				<svg viewBox="0 0 210 297">
 					<g>
-						<circle id="head" cx="87.241135" cy="95.980103" style="stroke-width:0.26458332" r="16.489212" />
-						<rect id="body" width="1.7008928" height="64.633926" x="86.107208" y="109.63453" style="stroke-width:0.26458332" />
-						<rect id="leftArm" width="40.254463" height="1.7008928" x="-159.02344" y="35.548561" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
-						<rect id="rightArm" width="40.254463" height="1.7008928" x="-36.749195" y="158.52542" style="stroke-width:0.25916466" transform="rotate(-45)" />
-						<rect id="leftLeg" width="40.254463" height="1.7008928" x="-101.39115" y="183.6152" style="stroke-width:0.25916466" transform="rotate(-45)" />
-						<rect id="rightLeg" width="40.254463" height="1.7008928" x="-224.36786" y="60.638519" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
-						<rect id="gallows0" width="120.76339" height="5.1026783" x="-162.43526" y="242.66591" style="stroke-width:0.77749395" transform="scale(-1,1)" />
-						<rect id="gallows1" width="201.65028" height="5.1026783" x="44.606392" y="137.67783" style="stroke-width:1.00468242" transform="matrix(0,1,1,0,0,0)" />
-						<rect id="gallows2" width="120.76339" height="5.1026783" x="-162.63573" y="40.070679" style="stroke-width:0.77749395" transform="scale(-1,1)" />
-						<rect id="gallows3" width="39.673386" height="5.1026783" x="41.431587" y="84.578529" style="stroke-width:0.44563469" transform="matrix(0,1,1,0,0,0)" />
+						<rect v-if="numWrongGuesses > 0" id="gallows0" width="120.76339" height="5.1026783" x="-162.43526" y="242.66591" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect v-if="numWrongGuesses > 1" id="gallows1" width="201.65028" height="5.1026783" x="44.606392" y="137.67783" style="stroke-width:1.00468242" transform="matrix(0,1,1,0,0,0)" />
+						<rect v-if="numWrongGuesses > 2" id="gallows2" width="120.76339" height="5.1026783" x="-162.63573" y="40.070679" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect v-if="numWrongGuesses > 3" id="gallows3" width="39.673386" height="5.1026783" x="41.431587" y="84.578529" style="stroke-width:0.44563469" transform="matrix(0,1,1,0,0,0)" />
+						<circle v-if="numWrongGuesses > 4" id="head" cx="87.241135" cy="95.980103" style="stroke-width:0.26458332" r="16.489212" />
+						<rect v-if="numWrongGuesses > 5" id="body" width="1.7008928" height="64.633926" x="86.107208" y="109.63453" style="stroke-width:0.26458332" />
+						<rect v-if="numWrongGuesses > 6" id="leftArm" width="40.254463" height="1.7008928" x="-159.02344" y="35.548561" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
+						<rect v-if="numWrongGuesses > 7" id="rightArm" width="40.254463" height="1.7008928" x="-36.749195" y="158.52542" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect v-if="numWrongGuesses > 8" id="leftLeg" width="40.254463" height="1.7008928" x="-101.39115" y="183.6152" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect v-if="numWrongGuesses > 9" id="rightLeg" width="40.254463" height="1.7008928" x="-224.36786" y="60.638519" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
 					</g>
 				</svg>
 			</div>
@@ -79,7 +90,7 @@
 			<div class="col-6 col-lg-4">
 				<div class="container">
 					<div class="row">
-						<button v-for="letter in letters" type="button" class="btn btn-outline-dark col m-1">{{letter.character}} </button>
+						<button v-for="letter in letters" type="button" class="btn btn-outline-dark col m-1" :disabled="letter.hasBeenChosenByUser" v-on:click="guessLetter(letter.character)">{{letter.character}} </button>
 					</div>
 				</div>
 			</div>
@@ -101,31 +112,37 @@
 var app = new Vue({
 	el: '#app',
 	data: {
-		displayedWord:'        ',
-		hiddenWord: 'AARDVARK',
+		hiddenWord: '',
 		alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		letters: {},//Will contain an object
 		dictionary: [],
+		numWrongGuesses: 0,
 	},
 	methods: {
 		// Called by user attempting to guess a letter
 		// Checks if letter is within hidden word
-		guessLetter: async function () {
-			
-		},		
+		guessLetter: async function (letter) {
+			this.letters[letter].hasBeenChosenByUser = true;
+
+			// If they guessed wrong
+			if(! this.hiddenWord.includes(letter)){
+				this.numWrongGuesses += 1;
+			}
+			this.$forceUpdate();
+		},
 		
 		// Read each line from wordlist file into a js dict
 		readDictionary: async function () {
 			let dictionary = await fetch('wordlist.txt');
 			dictionary = await dictionary.text();
-			dictionary = dictionary.split('\n');
+			dictionary = dictionary.split('\r\n');
 			return dictionary
 		},
 
 		// Returns a random item from inputted list
 		getRandomWord: async function (dictionary) {
 			let randomIndex = Math.floor(Math.random() * dictionary.length)
-			return dictionary[randomIndex]			
+			return dictionary[randomIndex]
 		},
 		
 		// Performs multiple setup actions
@@ -135,12 +152,12 @@ var app = new Vue({
 
 			// Instantiate Hidden Word
 			this.hiddenWord = await this.getRandomWord(this.dictionary);
+			
 
 			// Instantiate Letters Object
-			for (const alphabetLetter of this.alphabet) {
+			for (let alphabetLetter of this.alphabet) {
 				this.letters[alphabetLetter] = {
 					character: alphabetLetter,
-					isInRandomWord: false,
 					hasBeenChosenByUser: false,
 				}
 			}
@@ -155,6 +172,19 @@ var app = new Vue({
 		this.setupApp();
 	}
 })
+//make hidden word - - - - - -
+
+
+
+// for each letter in hidden letter
+// masked word = "-"
+// masked word (duplicate) letter.length
+
+// hiddenarray[] = hiddenword.split 
+// if clicked letter included in hidden array
+// hiddenarray[letter] = letter (update individual character)
+// display to screen
 </script>
 
 </html>
+
