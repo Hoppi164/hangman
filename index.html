@@ -37,7 +37,7 @@
 <header>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Nav Title -->
-		<a class="navbar-brand" href="#">Hangman</a>
+		<a class="navbar-brand" href="">Hangman</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -45,10 +45,10 @@
 		<div class="collapse navbar-collapse" id="navbarCollapse">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
-					<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="">Home</a>
 				</li>
 				<li class="nav-item active">
-					<a class="nav-link" href="#">New Game <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="">New Game</a>
 				</li>
 		</div>
 	</nav>
@@ -67,21 +67,20 @@
 		</h3>
 
 		<div class="row text-center">
-
 			<!-- Game Window -->
 			<div class="col-6 col-lg-8" style="border-style: solid;">
 				<svg viewBox="0 0 210 297">
 					<g>
-						<rect v-if="numWrongGuesses > 0" id="gallows0" width="120.76339" height="5.1026783" x="-162.43526" y="242.66591" style="stroke-width:0.77749395" transform="scale(-1,1)" />
-						<rect v-if="numWrongGuesses > 1" id="gallows1" width="201.65028" height="5.1026783" x="44.606392" y="137.67783" style="stroke-width:1.00468242" transform="matrix(0,1,1,0,0,0)" />
-						<rect v-if="numWrongGuesses > 2" id="gallows2" width="120.76339" height="5.1026783" x="-162.63573" y="40.070679" style="stroke-width:0.77749395" transform="scale(-1,1)" />
-						<rect v-if="numWrongGuesses > 3" id="gallows3" width="39.673386" height="5.1026783" x="41.431587" y="84.578529" style="stroke-width:0.44563469" transform="matrix(0,1,1,0,0,0)" />
-						<circle v-if="numWrongGuesses > 4" id="head" cx="87.241135" cy="95.980103" style="stroke-width:0.26458332" r="16.489212" />
-						<rect v-if="numWrongGuesses > 5" id="body" width="1.7008928" height="64.633926" x="86.107208" y="109.63453" style="stroke-width:0.26458332" />
-						<rect v-if="numWrongGuesses > 6" id="leftArm" width="40.254463" height="1.7008928" x="-159.02344" y="35.548561" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
-						<rect v-if="numWrongGuesses > 7" id="rightArm" width="40.254463" height="1.7008928" x="-36.749195" y="158.52542" style="stroke-width:0.25916466" transform="rotate(-45)" />
-						<rect v-if="numWrongGuesses > 8" id="leftLeg" width="40.254463" height="1.7008928" x="-101.39115" y="183.6152" style="stroke-width:0.25916466" transform="rotate(-45)" />
-						<rect v-if="numWrongGuesses > 9" id="rightLeg" width="40.254463" height="1.7008928" x="-224.36786" y="60.638519" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
+						<rect v-if="numRemainingGuesses < 10" id="gallows0" width="120.76339" height="5.1026783" x="-162.43526" y="242.66591" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect v-if="numRemainingGuesses < 9" id="gallows1" width="201.65028" height="5.1026783" x="44.606392" y="137.67783" style="stroke-width:1.00468242" transform="matrix(0,1,1,0,0,0)" />
+						<rect v-if="numRemainingGuesses < 8" id="gallows2" width="120.76339" height="5.1026783" x="-162.63573" y="40.070679" style="stroke-width:0.77749395" transform="scale(-1,1)" />
+						<rect v-if="numRemainingGuesses < 7" id="gallows3" width="39.673386" height="5.1026783" x="41.431587" y="84.578529" style="stroke-width:0.44563469" transform="matrix(0,1,1,0,0,0)" />
+						<circle v-if="numRemainingGuesses < 6" id="head" cx="87.241135" cy="95.980103" style="stroke-width:0.26458332" r="16.489212" />
+						<rect v-if="numRemainingGuesses < 5" id="body" width="1.7008928" height="64.633926" x="86.107208" y="109.63453" style="stroke-width:0.26458332" />
+						<rect v-if="numRemainingGuesses < 4" id="leftArm" width="40.254463" height="1.7008928" x="-159.02344" y="35.548561" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
+						<rect v-if="numRemainingGuesses < 3" id="rightArm" width="40.254463" height="1.7008928" x="-36.749195" y="158.52542" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect v-if="numRemainingGuesses < 2" id="leftLeg" width="40.254463" height="1.7008928" x="-101.39115" y="183.6152" style="stroke-width:0.25916466" transform="rotate(-45)" />
+						<rect v-if="numRemainingGuesses < 1" id="rightLeg" width="40.254463" height="1.7008928" x="-224.36786" y="60.638519" style="stroke-width:0.25916466" transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)" />
 					</g>
 				</svg>
 			</div>
@@ -93,12 +92,36 @@
 						<button v-for="letter in letters" type="button" class="btn btn-outline-dark col m-1" :disabled="letter.hasBeenChosenByUser" v-on:click="guessLetter(letter.character)">{{letter.character}} </button>
 					</div>
 				</div>
+				<h2>Remaining Guesses: {{numRemainingGuesses}}</h2>
 			</div>
+		</div>
 
+		<!-- Game Modal -->
+		<div class="modal fade" id="gameModal" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">{{gameModalTitle}}</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>{{gameModalBodyText}}</p>
+						
+						<!-- If new game - show new game options -->
 
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-primary" href="">New Game</a>
+					</div>
+				</div>
+			</div>
 		</div>
 		
+
 	</div>
+
 </body>
 
 
@@ -116,7 +139,11 @@ var app = new Vue({
 		alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		letters: {},//Will contain an object
 		dictionary: [],
-		numWrongGuesses: 0,
+		numRemainingGuesses: 10,
+		gameModalTitle: '',
+		gameModalBodyText: '',
+		numCorrectLetters: 0,
+
 	},
 	methods: {
 		// Called by user attempting to guess a letter
@@ -126,8 +153,31 @@ var app = new Vue({
 
 			// If they guessed wrong
 			if(! this.hiddenWord.includes(letter)){
-				this.numWrongGuesses += 1;
+				this.numRemainingGuesses -= 1;
+
+				// Lost The Game
+				if(this.numRemainingGuesses < 1){
+					this.gameModalTitle = "You Lose!";
+					this.gameModalBodyText = `The correct word was: "${this.hiddenWord}"`;
+
+					$('#gameModal').modal('show');
+				}
 			}
+
+
+			// They've guessed right
+			else{
+				var numThisLetter = (this.hiddenWord.split(letter).length - 1);
+				this.numCorrectLetters += numThisLetter;
+				// Won the game
+				if(this.numCorrectLetters == this.hiddenWord.length){
+					this.gameModalTitle = "You Win!";
+					this.gameModalBodyText = `The correct word was:  "${this.hiddenWord}"`;
+					$('#gameModal').modal('show');
+				}
+
+			}
+			
 			this.$forceUpdate();
 		},
 		
